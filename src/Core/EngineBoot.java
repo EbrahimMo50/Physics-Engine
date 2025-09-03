@@ -3,7 +3,7 @@ package Core;
 import GUI.Frame;
 import GUI.Panel;
 
-// the central class with all the intiallizations, dependicies and game loop
+/**the central class with all the intiallizations, dependicies and game loop*/
 public class EngineBoot extends Thread{
     private Frame _frame;
     private Engine _engine;
