@@ -44,6 +44,10 @@ public class Rainbow extends Thread {
         this._movables.addAll(newMovables);
     }
 
+    public void addMovables(Movable newMovable){
+        this._movables.add(newMovable);
+    }
+
     @Override
     public void run() {
         double percentage = 0.0;

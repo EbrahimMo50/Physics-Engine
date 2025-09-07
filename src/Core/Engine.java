@@ -16,47 +16,57 @@ public class Engine {
     // is set to (0, -10) each second the ball would move 120*10 downward on each
     // update
 
-    private final double DRAG = 0.1; // range 0-1, could use quadratic drag formula for more realistic drag
-    /** factor of gravity */
-    private final Pair<Double, Double> GRAVITY = new Pair<>(0.0 / EngineBoot.UPS, -9.8 / EngineBoot.UPS);
+    private final double DRAG = 1 / EngineBoot.UPS;
+    /** vector defination of gravity */
+    private final Pair<Double, Double> GRAVITY = new Pair<>(0.0, -9.8 / EngineBoot.UPS);
+    /** factor to kill velocity if it reached velocity low enough to stop the infinite bounce */
+    private final double VELOCITY_KILL_THRESHHOLD = 0.1;
 
-    private Circle dummy = new Circle(5, new Pair<>(50, 50), 10, 100.0, 0.8, new Color(255, 0, 0));
-    // boundaries of wall and floor to be taken dynamically every UPS from the panel
+    private List<Movable> _movables; // boundaries of wall and floor to be taken dynamically every UPS from the panel
     // or set constant and passed to panel?
     // second option is more fun tbf
 
     public Engine() {
-        List<Movable> movables = new ArrayList<Movable>();
-        movables.add(dummy);
+        Circle dummy = new Circle(5, new Pair<>(50.0, 50.0), 10, 100.0, 0.5, new Color(255, 0, 0));
+
+        _movables = new ArrayList<Movable>();
+        _movables.add(dummy);
         Rainbow effect = Rainbow.getInstance();
-        effect.addMovables(movables);
+        effect.addMovables(_movables);
         effect.start();
     }
 
-    public void update() {
-        Pair<Double, Double> velocityVector = dummy.getVelocityVector();
+    public void update(int limitX, int limitY) {
+        for (int i = 0; i < _movables.size(); i++) {
+            Movable m = _movables.get(i);
+            Pair<Double, Double> velocityVector = m.getVelocityVector();
 
-        // gravity force
-        velocityVector.x -= GRAVITY.x;
-        velocityVector.y -= GRAVITY.y;
+            // gravity force
+            velocityVector.x -= GRAVITY.x;
+            velocityVector.y -= GRAVITY.y;
 
-        // drag force
-        velocityVector.x -= velocityVector.x * DRAG;
-        velocityVector.y -= velocityVector.y * DRAG;
-        System.out.println(velocityVector.y);
+            // quadratic drag force (stronger at high velocities)
+            velocityVector.x -= velocityVector.x * Math.abs(velocityVector.x) * DRAG;
+            velocityVector.y -= velocityVector.y * Math.abs(velocityVector.y) * DRAG;
 
-        dummy.setVelocityVector(velocityVector.x, velocityVector.y);
-        dummy.position.x += (int) Math.floor(velocityVector.x);
-        dummy.position.y += (int) Math.floor(velocityVector.y);
+            m.position.x += velocityVector.x;
+            m.position.y += velocityVector.y;
 
-        if (dummy.position.y > 500 + dummy.radius) {
-            dummy.setVelocityVector(velocityVector.x, (-velocityVector.y) * dummy.getElasticity());
-            dummy.position.y = 500 - (int) dummy.radius;
+            if (m.position.y >= limitY - 5.0) {
+                velocityVector.y = -velocityVector.y * m.getElasticity();
+                m.position.y = (double)limitY - 5.0;
+
+                // snap to rest if very small velocity
+                if (Math.abs(velocityVector.y) < VELOCITY_KILL_THRESHHOLD) {
+                    velocityVector.y = 0.0;
+                }
+            }
+            m.setVelocityVector(velocityVector.x, velocityVector.y);
         }
-
     }
 
     public void render(Graphics2D g) {
-        dummy.draw(g);
+        for (Movable movable : _movables)
+            movable.draw(g);
     }
 }

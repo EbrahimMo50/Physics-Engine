@@ -39,7 +39,7 @@ public class EngineBoot extends Thread{
             previousTime = currentTime;
 
             if (deltaU >= 1) {
-                _engine.update();
+                _engine.update(_panel.getWidth(), _panel.getHeight());
                 deltaU--;
                 updates++;
             }

@@ -8,7 +8,7 @@ import java.awt.Graphics2D;
 // abstract class that is base to all movables
 public abstract class Movable {
     protected Pair<Double, Double> velocityVector;
-    public Pair<Integer, Integer> position;
+    public Pair<Double, Double> position;
 
     public double mass;
     protected double _terminalVelocity;
@@ -18,7 +18,7 @@ public abstract class Movable {
     public Color color;
 
     // no edging on mass's values negatives and zeros will work... this shall be fun
-    public Movable(Pair<Integer, Integer> pos, double mass, double terminalVelocity, double elasticity, Color color) {
+    public Movable(Pair<Double, Double> pos, double mass, double terminalVelocity, double elasticity, Color color) {
         this.velocityVector = new Pair<Double, Double>(0.0, 0.0);
         this.position = pos;
         this.mass = mass;
