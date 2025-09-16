@@ -1,12 +1,9 @@
 package Core;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
-
 import Fun.Rainbow;
-import Movables.Circle;
 import Movables.Movable;
 import Utiliz.Pair;
 
@@ -27,13 +24,20 @@ public class Engine {
     // second option is more fun tbf
 
     public Engine() {
-        Circle dummy = new Circle(5, new Pair<>(50.0, 50.0), 10, 100.0, 0.5, new Color(255, 0, 0));
-
         _movables = new ArrayList<Movable>();
-        _movables.add(dummy);
         Rainbow effect = Rainbow.getInstance();
-        effect.addMovables(_movables);
+        effect.setMovables(_movables);
         effect.start();
+    }
+
+    public void addMovables(List<Movable> movables){
+        for (Movable movable : movables) 
+            addMovables(movable);
+    }
+
+    public void addMovables(Movable movable){
+        // check collision using collison handler
+        this._movables.add(movable);
     }
 
     public void update(int limitX, int limitY) {

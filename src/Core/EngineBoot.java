@@ -1,20 +1,27 @@
 package Core;
 
 import GUI.Frame;
+import GUI.MouseControls;
 import GUI.Panel;
 
 /**the central class with all the intiallizations, dependicies and game loop*/
 public class EngineBoot extends Thread{
-    private Frame _frame;
     private Engine _engine;
+
+    private Frame _frame;
     private Panel _panel;
+    private MouseControls _mouseControls;
+    private Generator _generator;
 
     public static final int UPS = 120;  // exposed as public for engine to use as relative calculation for affectors to be done by second
     public static final int FPS = 60;
 
     public EngineBoot(){
         _engine = new Engine();
-        _panel = new Panel(_engine);
+        _mouseControls = new MouseControls(_engine);
+        _panel = new Panel(_engine, _mouseControls);
+        _generator = new Generator(_panel);
+        _mouseControls.setGenerator(_generator);
         _frame = new Frame(_panel);
     }
 

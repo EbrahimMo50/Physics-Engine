@@ -40,6 +40,12 @@ public class Rainbow extends Thread {
         return _instance;
     }
 
+    // taken by reference affecting all to be added movables
+    public void setMovables(List<Movable> movables){
+        this._movables = movables;
+    }
+
+    // taking only the movables on the starting call of the method leaving any to be added for manual additional calls
     public void addMovables(List<Movable> newMovables) {
         this._movables.addAll(newMovables);
     }
