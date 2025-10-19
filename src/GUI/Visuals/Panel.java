@@ -1,4 +1,4 @@
-package GUI;
+package GUI.Visuals;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import Core.Engine;
+import GUI.Controls.MouseControls;
 
 // the panel will be listner for its actions to avoid over complicating things for now
 public class Panel extends JPanel {

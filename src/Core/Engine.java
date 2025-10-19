@@ -3,8 +3,11 @@ package Core;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
+
+import Core.Collison.CollisionHandler;
 import Fun.Rainbow;
 import Movables.Movable;
+import Movables.Collidables.Boundary;
 import Utiliz.Pair;
 
 public class Engine {
@@ -16,8 +19,15 @@ public class Engine {
     private final double DRAG = 1 / EngineBoot.UPS;
     /** vector defination of gravity */
     private final Pair<Double, Double> GRAVITY = new Pair<>(0.0, -9.8 / EngineBoot.UPS);
-    /** factor to kill velocity if it reached velocity low enough to stop the infinite bounce */
-    private final double VELOCITY_KILL_THRESHHOLD = 0.1;
+
+    /**
+     * factor to kill velocity if it reached velocity low enough to stop the
+     * infinite bounce
+     */
+    private static final double VELOCITY_KILL_THRESHHOLD = 0.8; // lowest possible threshhold when gravity is -9.8/120
+                                                                // and drag is equal to 1 is 0.006 in elastic
+                                                                // collision
+                                                                // case
 
     private List<Movable> _movables; // boundaries of wall and floor to be taken dynamically every UPS from the panel
     // or set constant and passed to panel?
@@ -30,12 +40,12 @@ public class Engine {
         effect.start();
     }
 
-    public void addMovables(List<Movable> movables){
-        for (Movable movable : movables) 
+    public void addMovables(List<Movable> movables) {
+        for (Movable movable : movables)
             addMovables(movable);
     }
 
-    public void addMovables(Movable movable){
+    public void addMovables(Movable movable) {
         // check collision using collison handler
         this._movables.add(movable);
     }
@@ -53,24 +63,49 @@ public class Engine {
             velocityVector.x -= velocityVector.x * Math.abs(velocityVector.x) * DRAG;
             velocityVector.y -= velocityVector.y * Math.abs(velocityVector.y) * DRAG;
 
-            m.position.x += velocityVector.x;
-            m.position.y += velocityVector.y;
+            m.setVelocityVector(velocityVector.x, velocityVector.y);
 
-            if (m.position.y >= limitY - 5.0) {
-                velocityVector.y = -velocityVector.y * m.getElasticity();
-                m.position.y = (double)limitY - 5.0;
+            // collision checks and resolve
 
-                // snap to rest if very small velocity
-                if (Math.abs(velocityVector.y) < VELOCITY_KILL_THRESHHOLD) {
-                    velocityVector.y = 0.0;
+            Boundary currentBoundaryLimit = new Boundary(limitX, limitY);
+
+            if (CollisionHandler.collides(m, currentBoundaryLimit)) {
+                CollisionHandler.resolve(m, currentBoundaryLimit);
+                _applyKillThreshHold(m);
+            }
+
+            for (int j = i + 1; j < _movables.size(); ++j) {
+                Movable nextMovable = _movables.get(j);
+                if (CollisionHandler.collides(m, nextMovable)) {
+                    CollisionHandler.resolve(m, nextMovable);
+                    _applyKillThreshHold(m, nextMovable);
                 }
             }
-            m.setVelocityVector(velocityVector.x, velocityVector.y);
+            m.position.x += m.getVelocityVector().x;
+            m.position.y += m.getVelocityVector().y;
         }
     }
 
     public void render(Graphics2D g) {
         for (Movable movable : _movables)
             movable.draw(g);
+    }
+
+    public void notifyFramePositionChange(int dx, int dy) {
+        for (Movable movable : _movables) {
+            movable.position.x -= dx;
+            movable.position.y -= dy;
+        }
+    }
+
+    /// kills any minimal velocity upon collision to prevent jittering
+    private void _applyKillThreshHold(Movable... movables) {
+        for (Movable m : movables) {
+            if (Math.abs(m.getVelocityVector().y) < VELOCITY_KILL_THRESHHOLD)
+                m.setVelocityVector(m.getVelocityVector().x, 0.0);
+
+            if (Math.abs(m.getVelocityVector().x) < VELOCITY_KILL_THRESHHOLD)
+                m.setVelocityVector(0.0, m.getVelocityVector().y);
+        }
     }
 }

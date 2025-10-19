@@ -3,14 +3,14 @@ package Core;
 import java.awt.Color;
 import java.util.Random;
 
-import GUI.Panel;
+import GUI.Visuals.Panel;
 import Movables.Circle;
 import Utiliz.Pair;
 
 public class Generator {
 
-    private final double LIMIT_RADIUS = 75.0;
-    private final double LIMIT_MASS = 1000.0;
+    private final double LIMIT_RADIUS = 40.0;
+    private final double LIMIT_MASS = 100.0;
     private final double LIMIT_VELOCITY = 500.0;
 
     private Panel _panel;
@@ -32,11 +32,11 @@ public class Generator {
     private Circle _generateRandomCircle(){
         Random random = new Random();
 
-        double radius = (random.nextDouble() * LIMIT_RADIUS) + 0.001;
+        double radius = (random.nextDouble() * LIMIT_RADIUS) + 1;
         Pair<Double, Double> position = new Pair<>(random.nextDouble() * (double) this._panel.getX(), random.nextDouble() * (double) this._panel.getY());
         double mass = (random.nextDouble() * LIMIT_MASS) + 0.001;
         double terminalVelocity = (random.nextDouble() * LIMIT_VELOCITY) + 0.001;
-        double elasticity = random.nextDouble();
+        double elasticity = 1;
         Color color = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
 
         return new Circle(radius, position, mass, terminalVelocity, elasticity, color);

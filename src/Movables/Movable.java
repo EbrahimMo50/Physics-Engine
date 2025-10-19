@@ -5,8 +5,10 @@ import Utiliz.Pair;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import Movables.Collidables.Collidable;
+
 // abstract class that is base to all movables
-public abstract class Movable {
+public abstract class Movable implements Collidable {
     protected Pair<Double, Double> velocityVector;
     public Pair<Double, Double> position;
 

@@ -1,8 +1,13 @@
 package Core;
 
-import GUI.Frame;
-import GUI.MouseControls;
-import GUI.Panel;
+import Core.Collison.CollisionHandler;
+import Core.Collison.CollisionRules.CollisionRules;
+import Core.Collison.ResolveInstructions.ResolveInstructions;
+import GUI.Controls.MouseControls;
+import GUI.Visuals.Frame;
+import GUI.Visuals.Panel;
+import Movables.Circle;
+import Movables.Collidables.Boundary;
 
 /**the central class with all the intiallizations, dependicies and game loop*/
 public class EngineBoot extends Thread{
@@ -22,9 +27,27 @@ public class EngineBoot extends Thread{
         _panel = new Panel(_engine, _mouseControls);
         _generator = new Generator(_panel);
         _mouseControls.setGenerator(_generator);
-        _frame = new Frame(_panel);
+        _frame = new Frame(_panel, this);
+
+        populateHandler();          // call to register the rules and instructions in the handler
     }
 
+    // Could be done through reflaction on Rules methods since each new added collidable will add +CountMovables to the rules and the registeration calls
+    private static void populateHandler(){
+        
+        //#region rules
+        CollisionHandler.register(Circle.class, Boundary.class, (Circle c, Boundary b) -> CollisionRules.checkCircleBoundary(c, b));
+        CollisionHandler.register(Circle.class, Circle.class, (Circle c1, Circle c2) -> CollisionRules.checkCircleCircle(c1, c2));
+
+        //#endregion rules
+
+        //#region resolvers
+        CollisionHandler.register(Circle.class, Boundary.class, (Circle c, Boundary b) -> ResolveInstructions.resolveCircleBoundary(c, b));
+        CollisionHandler.register(Circle.class, Circle.class, (Circle c1, Circle c2) -> ResolveInstructions.resolveCircleCircle(c1, c2));
+
+        //#endregion resolvers
+
+    }
 
     @Override
     public void run() {
@@ -65,5 +88,9 @@ public class EngineBoot extends Thread{
             }
             // fps displayer
         }
+    }
+
+    public void notifyFramePositionChange(int dx, int dy) {
+        _engine.notifyFramePositionChange(dx, dy);
     }
 }

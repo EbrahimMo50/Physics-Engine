@@ -1,4 +1,4 @@
-package GUI;
+package GUI.Controls;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -24,11 +24,12 @@ public class MouseControls implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        _engine.addMovables(_generator.randomCircle(e.getX(),e.getY()));
     }
 
     @Override
-    public void mousePressed(MouseEvent e) { }
+    public void mousePressed(MouseEvent e) {
+        _engine.addMovables(_generator.randomCircle(e.getX(),e.getY()));
+     }
 
     @Override
     public void mouseReleased(MouseEvent e) { }

@@ -10,23 +10,41 @@ public class Rainbow extends Thread {
 
     private List<Movable> _movables;
     private static Rainbow _instance;
-    
+
     /**
-     *  controls transition from color to another the lower the smoother
-     *  ranged between 0-1 */
+     * controls transition from color to another the lower the smoother
+     * ranged between 0-1
+     */
     private final double STEP_SMOOTHNESS = 0.1;
     /**
      * controls delay between each update
-     * measured in millie second */
+     * measured in millie second
+     */
     private final long DELAY_CONSTANT = 100;
     private final Color[] GRADIANT = {
             new Color(255, 0, 0),
+            new Color(255, 64, 0),
             new Color(255, 127, 0),
+            new Color(255, 191, 0),
             new Color(255, 255, 0),
+            new Color(191, 255, 0),
+            new Color(127, 255, 0),
+            new Color(64, 255, 0),
             new Color(0, 255, 0),
+            new Color(0, 255, 127),
+            new Color(0, 255, 191),
+            new Color(0, 255, 255),
+            new Color(0, 191, 255),
+            new Color(0, 127, 255),
+            new Color(0, 64, 255),
             new Color(0, 0, 255),
             new Color(75, 0, 130),
-            new Color(143, 0, 255)
+            new Color(127, 0, 191),
+            new Color(191, 0, 255),
+            new Color(255, 0, 255),
+            new Color(255, 0, 191),
+            new Color(255, 0, 127),
+            new Color(255, 0, 64)
     };
 
     private Rainbow() {
@@ -41,16 +59,17 @@ public class Rainbow extends Thread {
     }
 
     // taken by reference affecting all to be added movables
-    public void setMovables(List<Movable> movables){
+    public void setMovables(List<Movable> movables) {
         this._movables = movables;
     }
 
-    // taking only the movables on the starting call of the method leaving any to be added for manual additional calls
+    // taking only the movables on the starting call of the method leaving any to be
+    // added for manual additional calls
     public void addMovables(List<Movable> newMovables) {
         this._movables.addAll(newMovables);
     }
 
-    public void addMovables(Movable newMovable){
+    public void addMovables(Movable newMovable) {
         this._movables.add(newMovable);
     }
 
@@ -61,16 +80,19 @@ public class Rainbow extends Thread {
         while (!Thread.currentThread().isInterrupted()) {
 
             if (!_movables.isEmpty()) {
-                Color startColor = GRADIANT[colorIndex];
-                Color endColor = GRADIANT[(colorIndex + 1)% this.GRADIANT.length];
 
-                int r = (int) (startColor.getRed() + (endColor.getRed() - startColor.getRed()) * percentage);
-                int g = (int) (startColor.getGreen() + (endColor.getGreen() - startColor.getGreen()) * percentage);
-                int b = (int) (startColor.getBlue() + (endColor.getBlue() - startColor.getBlue()) * percentage);
+                for (int i = 0; i < _movables.size(); ++i) {
+                    Movable movable = _movables.get(i);
 
-                Color newColor = new Color(r, g, b);
+                    Color startColor = GRADIANT[(colorIndex + i) % this.GRADIANT.length];
+                    Color endColor = GRADIANT[(colorIndex + 1 + i) % this.GRADIANT.length];
 
-                for (Movable movable : _movables) {
+                    int r = (int) (startColor.getRed() + (endColor.getRed() - startColor.getRed()) * percentage);
+                    int g = (int) (startColor.getGreen() + (endColor.getGreen() - startColor.getGreen()) * percentage);
+                    int b = (int) (startColor.getBlue() + (endColor.getBlue() - startColor.getBlue()) * percentage);
+
+                    Color newColor = new Color(r, g, b);
+
                     movable.color = newColor;
                 }
 
