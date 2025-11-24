@@ -13,14 +13,6 @@ Overview (top → bottom):
 - **Movables**: domain objects (e.g. `Circle`) that hold position, velocity and draw logic. They implement `Renderable` / `Movable` interfaces and are owned/updated by the `Engine`.
 - **GUI**: `Frame` (window) and `Panel` (drawing surface). The `Panel` holds `Renderable` instances and paints them when `repaint()` is requested by the `EngineBoot` loop.
 
-ASCII overview:
-
-Main → EngineBoot
-	├─ Engine (simulation loop: UPS updates, FPS renders)
-	├─ Panel (render surface)
-	├─ ControlsResolver / MouseControls
-	└─ CollisionHandler (registry of rules + resolvers)
-
 Movables (Circle, Boundary, ...) ⇄ Engine (update & collision checks) ⇄ CollisionHandler
 
 ## Important Packages & Files
