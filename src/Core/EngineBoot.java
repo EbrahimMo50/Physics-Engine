@@ -3,6 +3,7 @@ package Core;
 import Core.Collison.CollisionHandler;
 import Core.Collison.CollisionRules.CollisionRules;
 import Core.Collison.ResolveInstructions.ResolveInstructions;
+import GUI.Controls.ControlsResolver;
 import GUI.Controls.MouseControls;
 import GUI.Visuals.Frame;
 import GUI.Visuals.Panel;
@@ -13,23 +14,27 @@ import Movables.Collidables.Boundary;
 public class EngineBoot extends Thread{
     private Engine _engine;
 
-    private Frame _frame;
     private Panel _panel;
     private MouseControls _mouseControls;
-    private Generator _generator;
+    private ControlsResolver _controlsResolver;
 
     public static final int UPS = 120;  // exposed as public for engine to use as relative calculation for affectors to be done by second
     public static final int FPS = 60;
 
     public EngineBoot(){
         _engine = new Engine();
-        _mouseControls = new MouseControls(_engine);
-        _panel = new Panel(_engine, _mouseControls);
-        _generator = new Generator(_panel);
-        _mouseControls.setGenerator(_generator);
-        _frame = new Frame(_panel, this);
+        _panel = new Panel();
+        _controlsResolver = new ControlsResolver(_engine, _panel);
+        _mouseControls = new MouseControls(_controlsResolver);
+        new Frame(_panel, this);
 
+        _panel.addMouseListener(_mouseControls);
+        loadRenderables();          // populates the panel with any component in the system that used the render method
         populateHandler();          // call to register the rules and instructions in the handler
+    }
+
+    private void loadRenderables(){
+        this._panel.addRenderable(_engine, _controlsResolver);
     }
 
     // Could be done through reflaction on Rules methods since each new added collidable will add +CountMovables to the rules and the registeration calls

@@ -20,8 +20,8 @@ public abstract class Movable implements Collidable {
     public Color color;
 
     // no edging on mass's values negatives and zeros will work... this shall be fun
-    public Movable(Pair<Double, Double> pos, double mass, double terminalVelocity, double elasticity, Color color) {
-        this.velocityVector = new Pair<Double, Double>(0.0, 0.0);
+    public Movable(Pair<Double, Double> pos,Pair<Double, Double> velocityVec, double mass, double terminalVelocity, double elasticity, Color color) {
+        this.velocityVector = velocityVec;
         this.position = pos;
         this.mass = mass;
         this._invMass = 1 / mass; // on mass equal zero _invMass will be infinity

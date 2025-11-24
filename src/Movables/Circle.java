@@ -10,8 +10,8 @@ public class Circle extends Movable {
 
     public double radius;
 
-    public Circle(double radius, Pair<Double, Double> pos, double mass, double terminalVelocity, double elasticity, Color color) {
-        super(pos, mass, terminalVelocity, elasticity, color);
+    public Circle(double radius, Pair<Double, Double> pos, Pair<Double, Double> velocityVec, double mass, double terminalVelocity, double elasticity, Color color) {
+        super(pos, velocityVec, mass, terminalVelocity, elasticity, color);
         this.radius = radius;
     }
 

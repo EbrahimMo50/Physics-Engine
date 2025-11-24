@@ -9,8 +9,9 @@ import Fun.Rainbow;
 import Movables.Movable;
 import Movables.Collidables.Boundary;
 import Utiliz.Pair;
+import Utiliz.Renderable;
 
-public class Engine {
+public class Engine implements Renderable {
     // in the case of UPS set to 120 update per second which means if accelration
     // affecting
     // is set to (0, -10) each second the ball would move 120*10 downward on each
