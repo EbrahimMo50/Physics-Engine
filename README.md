@@ -78,4 +78,5 @@ This decoupled approach makes it easy to add new collidable types: implement the
 - Add unit tests for collision rule edge cases (grazing/tangent collisions).
 - Add a simple visualization overlay showing penetration vectors and normals to debug resolution issues.
 - Consider using vector types for positions/velocities to make math clearer and less error-prone.
-
+---
+<img width="752" height="529" alt="image" src="https://github.com/user-attachments/assets/d5ef81bd-df71-41a9-b245-21653cd62be4" />
